@@ -7,10 +7,10 @@ Spring 2025
 
 ## Information about your submission
 
-1. Name and email: add your name and email here.
-2. Team member name and email: add team member info. say none if this is a solo submission
-3. Number of late days used for this lab: say zero if none used
-4. Number of late days used so far including this lab: say zero if none used.
+1. Name and email: Tejas Sivan, tsivan@umass.edu
+2. Team member name and email: Deepesh Suranjandass, dsuranjandas@umass.edu
+3. Number of late days used for this lab: 0
+4. Number of late days used so far including this lab: 2
 
 ## Goals and Learning Outcomes
 
