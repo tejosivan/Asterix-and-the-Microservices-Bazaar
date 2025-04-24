@@ -1,0 +1,14 @@
+transaction_number,stock_name,order_type,quantity,timestamp
+0,GameStart,sell,1,1745457049.339314
+1,GameStart,sell,1,1745457054.4423184
+2,GameStart,sell,1,1745457059.5404234
+3,GameStart,sell,1,1745457064.6506882
+4,GameStart,sell,1,1745457069.760975
+5,GameStart,sell,1,1745457074.8687794
+6,GameStart,sell,1,1745457079.9893467
+7,GameStart,sell,1,1745457085.1074042
+8,GameStart,sell,1,1745457090.2045324
+9,GameStart,sell,1,1745457095.302133
+10,MenhirCo,sell,1,1745464972.1796663
+11,MenhirCo,sell,1,1745464978.760698
+12,MenhirCo,sell,1,1745464980.130209
