@@ -4,6 +4,7 @@ from urllib.parse import urlparse
 import socket
 import threading
 import os
+from collections import OrderedDict
 
 CATALOG_HOST = os.environ.get("CATALOG_HOST", "localhost")
 CATALOG_PORT = int(os.environ.get("CATALOG_PORT", "6666"))
@@ -13,11 +14,34 @@ PORT = int(os.environ.get("PORT", "5555"))
 
 local_data = threading.local()
 
+# AI: ChatGPT4o
+# prompt: i need to implement an LRU cache in python. Give me some starter code
+class LRUCache:
+    def __init__(self, capacity: int):
+        self.cache = OrderedDict()
+        self.capacity = capacity
+
+    def get(self, key):
+            if key not in self.cache:
+                return -1
+            self.cache.move_to_end(key)
+            return self.cache[key]
+        
+    def put(self, key, value):
+            if key in self.cache:
+                self.cache.move_to_end(key)
+            self.cache[key] = value
+            if len(self.cache) > self.capacity:
+                self.cache.popitem(last=False)
+# end AI: prompt: i need to implement an LRU cache in python. Give me some starter code
+cache = LRUCache(2) # change
+
+
 
 # https://pymotw.com/2/BaseHTTPServer/
 # also AI
 """
-AI: ChatGPT 4o 
+AI: ChatGPT 4o - used in Lab 2
  Prompt: I need help implementing socket connection management for a microservices application. Can you help me write functions that:
 
 Create and maintain persistent socket connections to backend services
@@ -92,17 +116,31 @@ def ask_order(request):
 class StockHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         parsed_path = urlparse(self.path).path
+
+
         if parsed_path.startswith("/stocks/"):
             stock_name = parsed_path[8:]
             print(f"Looking up stock: {stock_name}")
-            catalog_request = {"action": "lookup", "stock_name": stock_name}
-            service_response = ask_catalog(catalog_request)
-            if service_response["status"] == "success":
-                response = {"data": service_response["data"]}
-                self.send_response(200)
+
+            # LRU Cache bit
+            stock_details = cache.get(stock_name)
+            if stock_details == -1:
+                print(f" Cache miss, contacting catalog")
+                catalog_request = {"action": "lookup", "stock_name": stock_name}
+                service_response = ask_catalog(catalog_request)
+                if service_response["status"] == "success":
+                    stock_details = service_response["data"]
+                    cache.put(stock_name, stock_details)
+                    response = {"data": stock_details}
+                    self.send_response(200)
+                else:
+                    response = {"error": service_response["error"]}
+                    self.send_response(service_response["error"]["code"])
+
             else:
-                response = {"error": service_response["error"]}
-                self.send_response(service_response["error"]["code"])
+                print(f"Cache hit!")
+                response = {"data": stock_details}
+                self.send_response(200)
             self.send_header("Content-Type", "application/json")
             self.end_headers()
             self.wfile.write(json.dumps(response).encode("utf-8"))
