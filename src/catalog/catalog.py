@@ -100,6 +100,7 @@ def change_quantity(stock_name, qty_change):
             }
         stocky_stuff[stock_name]["quantity"] = new_qty
         save_stocks()
+        send_invalidation(stock_name) # calling invalidate function
         return {
             "status": "success",
             "data": {
@@ -129,6 +130,22 @@ def handle_client(client_socket):
         print(f"Error handling client: {e}")
     finally:
         client_socket.close()
+
+# AI: ChatGPT4o
+# prompt: my cache doesnt get updated upon a trade. Give me some starter code for my catalog service to invalidate cache entries that have been updated. i want it in basic python and sockets, not flask.
+def send_invalidation(stock_name):
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.connect(("localhost", 5556))
+            message = json.dumps({"invalidate": stock_name})
+            sock.sendall(message.encode("utf-8"))
+            print(f"Sent invalidation for {stock_name} to frontend")
+    except Exception as e:
+        print(f"Invalidation send failed: {e}")
+
+
+
+# end prompt: my cache doesnt get updated upon a trade. Give me some starter code for my catalog service to invalidate cache entries that have been updated. i want it in basic python and sockets, not flask.
 
 
 # driver code
