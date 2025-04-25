@@ -14,6 +14,50 @@ PORT = int(os.environ.get("PORT", "5555"))
 
 local_data = threading.local()
 
+ORDER_REPLICAS = []
+leader = None
+
+
+def get_replica_details():
+    global ORDER_REPLICAS
+    with open("orders.json", "r") as f:
+        ORDER_REPLICAS = json.load(f)
+    ORDER_REPLICAS.sort(key=lambda i: i["id"])
+
+# AI: ChatGPT4o
+# prompt: Help me with some starter code to go through replicas from a list of replicas and to "ping" them to see if they're up
+
+def leader_selection():
+    global leader
+    leader = None
+
+    for replica in ORDER_REPLICAS:
+        try:
+            print(f"Trying to connect to replica {replica['id']} at {replica['host']}:{replica['port']}")  # <-- add this!
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(3)
+            sock.connect((replica["host"], replica["port"]))
+
+            ping_request = {"action": "ping"}
+            sock.sendall(json.dumps(ping_request).encode("utf-8"))
+            response = sock.recv(4096)
+            reply = json.loads(response.decode("utf-8"))
+            sock.close()
+
+            if reply.get("status") == "success":
+                leader = replica
+                print(f"Leader selected: Replica {replica['id']}")
+                return
+        except Exception as e:
+            print(f"Could not reach Replica {replica['id']}")
+
+    print("No leader found!")
+
+# end prompt: Help me with some starter code to go through replicas from a list of replicas and to "ping" them to see if they're up
+
+
+
+
 # AI: ChatGPT4o
 # prompt: i need to implement an LRU cache in python. Give me some starter code
 class LRUCache:
@@ -22,17 +66,17 @@ class LRUCache:
         self.capacity = capacity
 
     def get(self, key):
-            if key not in self.cache:
-                return -1
-            self.cache.move_to_end(key)
-            return self.cache[key]
+        if key not in self.cache:
+            return -1
+        self.cache.move_to_end(key)
+        return self.cache[key]
         
     def put(self, key, value):
-            if key in self.cache:
-                self.cache.move_to_end(key)
-            self.cache[key] = value
-            if len(self.cache) > self.capacity:
-                self.cache.popitem(last=False)
+        if key in self.cache:
+            self.cache.move_to_end(key)
+        self.cache[key] = value
+        if len(self.cache) > self.capacity:
+            self.cache.popitem(last=False)
 # end AI: prompt: i need to implement an LRU cache in python. Give me some starter code
 cache = LRUCache(2) # change
 
@@ -114,26 +158,26 @@ def ask_catalog(request):
 
 
 def ask_order(request):
+    global leader
+    if leader is None:
+        leader_selection()
+        if leader is None:
+            return {
+                "status": "error",
+                "error": {"code": 503, "message": "No leader found"},
+            }
+    
     try:
-        sock = get_order_socket()
-        sock.sendall(json.dumps(request).encode("utf-8"))
-        response = sock.recv(4096)
-        return json.loads(response.decode("utf-8"))
-    except Exception as e:
-        print(f"Error talking to order service: {e}")
-        try:
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.connect((ORDER_HOST, ORDER_PORT))
-            local_data.order_socket = sock
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.connect((leader["host"], leader["port"]))
             sock.sendall(json.dumps(request).encode("utf-8"))
             response = sock.recv(4096)
             return json.loads(response.decode("utf-8"))
-        except Exception as e2:
-            print(f"Reconnection failed: {e2}")
-            return {
-                "status": "error",
-                "error": {"code": 500, "message": "Order service unavailable"},
-            }
+        
+    except Exception as e:
+        print(f"Error talking to order service: {e}")
+        leader = None
+        return ask_order(request)
 
 
 class StockHandler(BaseHTTPRequestHandler):
@@ -246,4 +290,6 @@ def serve():
 
 
 if __name__ == "__main__":
+    get_replica_details()
+    leader_selection()
     serve()

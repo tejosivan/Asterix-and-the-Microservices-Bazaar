@@ -4,17 +4,26 @@ import json
 import csv
 import os
 import time
+import sys
 
 # Basic variables initialization
 next_transaction = 0
 scribble_lock = threading.Lock()
-order_file = "data/orders.csv"
-server_port = 7777
+
 
 # Use environment variable to set catalog host/port
 catalog_host = os.environ.get("CATALOG_HOST", "localhost")
 catalog_port = int(os.environ.get("CATALOG_PORT", "6666"))
 
+
+def setup_replicas():
+    global replica_no, order_file, server_port
+    if len(sys.argv) > 1:
+        replica_no = int(sys.argv[1])
+    else:
+        replica_no = 0
+    order_file = "data/orders" + str(replica_no) + ".csv"
+    server_port = 7777 + replica_no
 
 """
 AI: ChatGPT 4o  
@@ -101,7 +110,10 @@ def handle_client(client_socket):
                 data.decode("utf-8")
             )  # Resource: https://docs.python.org/3/library/json.html
             response = {}
-            if request["action"] == "trade":
+            if request["action"] == "ping":
+                response = {"status": "success"}
+                print("debug: ping recvd")
+            elif request["action"] == "trade":
                 response = process_trade(
                     request["stock_name"], request["quantity"], request["order_type"]
                 )
@@ -188,4 +200,5 @@ def start_serve():
 
 
 if __name__ == "__main__":
+    setup_replicas()
     start_serve()
