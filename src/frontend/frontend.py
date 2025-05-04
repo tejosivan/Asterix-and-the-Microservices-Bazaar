@@ -24,8 +24,10 @@ def get_replica_details():
         ORDER_REPLICAS = json.load(f)
     ORDER_REPLICAS.sort(key=lambda i: i["id"])
 
+
 # AI: ChatGPT4o
 # prompt: Help me with some starter code to go through replicas from a list of replicas and to "ping" them to see if they're up
+
 
 def leader_selection():
     global leader
@@ -33,7 +35,9 @@ def leader_selection():
 
     for replica in ORDER_REPLICAS:
         try:
-            print(f"Trying to connect to replica {replica['id']} at {replica['host']}:{replica['port']}")  # <-- add this!
+            print(
+                f"Trying to connect to replica {replica['id']} at {replica['host']}:{replica['port']}"
+            )  # <-- add this!
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.settimeout(3)
             sock.connect((replica["host"], replica["port"]))
@@ -53,9 +57,8 @@ def leader_selection():
 
     print("No leader found!")
 
+
 # end prompt: Help me with some starter code to go through replicas from a list of replicas and to "ping" them to see if they're up
-
-
 
 
 # AI: ChatGPT4o
@@ -70,21 +73,24 @@ class LRUCache:
             return -1
         self.cache.move_to_end(key)
         return self.cache[key]
-        
+
     def put(self, key, value):
         if key in self.cache:
             self.cache.move_to_end(key)
         self.cache[key] = value
         if len(self.cache) > self.capacity:
             self.cache.popitem(last=False)
-# end AI: prompt: i need to implement an LRU cache in python. Give me some starter code
-cache = LRUCache(2) # change
 
+
+# end AI: prompt: i need to implement an LRU cache in python. Give me some starter code
+cache = LRUCache(3)  # change
 
 
 # AI: ChatGPT4o
 # prompt: my cache doesnt get updated upon a trade. Give me some starter code for my catalog service to invalidate cache entries that have been updated. i want it in basic python and sockets, not flask.
 INVALIDATION_PORT = 5556
+
+
 def invalidation_listener():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -104,6 +110,8 @@ def invalidation_listener():
         except Exception as e:
             print(f"Error in invalidation listener: {e}")
         client_socket.close()
+
+
 # end prompt: my cache doesnt get updated upon a trade. Give me some starter code for my catalog service to invalidate cache entries that have been updated. i want it in basic python and sockets, not flask.
 
 
@@ -159,31 +167,43 @@ def ask_catalog(request):
 
 def ask_order(request):
     global leader
-    if leader is None:
-        leader_selection()
+    max_retries = 3
+    retries = 0
+
+    while retries < max_retries:
         if leader is None:
-            return {
-                "status": "error",
-                "error": {"code": 503, "message": "No leader found"},
-            }
-    
-    try:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-            sock.connect((leader["host"], leader["port"]))
-            sock.sendall(json.dumps(request).encode("utf-8"))
-            response = sock.recv(4096)
-            return json.loads(response.decode("utf-8"))
-        
-    except Exception as e:
-        print(f"Error talking to order service: {e}")
-        leader = None
-        return ask_order(request)
+            leader_selection()
+            if leader is None:
+                return {
+                    "status": "error",
+                    "error": {"code": 503, "message": "No leader found"},
+                }
+
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+                sock.settimeout(5)  # We are setting a timeout value here
+                sock.connect((leader["host"], leader["port"]))
+                sock.sendall(json.dumps(request).encode("utf-8"))
+                response = sock.recv(4096)
+                return json.loads(response.decode("utf-8"))
+
+        except Exception as e:
+            print(f"Error talking to leader: {e}")
+            retries += 1
+            leader = None
+
+    return {
+        "status": "error",
+        "error": {
+            "code": 503,
+            "message": "Order service unavailable after multiple retries",
+        },
+    }
 
 
 class StockHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         parsed_path = urlparse(self.path).path
-
 
         if parsed_path.startswith("/stocks/"):
             stock_name = parsed_path[8:]
@@ -232,11 +252,8 @@ class StockHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(json.dumps(response).encode("utf-8"))
 
-
         else:
             self.send_error(404, "Invalid endpoint")
-        
-        
 
     """
      End AI-assisted code piece
