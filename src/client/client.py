@@ -47,7 +47,7 @@ def run_client(p, stock_name):
                             "order_number": transaction_number,
                             "stock_name": stock_name,
                             "type": "sell",
-                            "quantity": 1
+                            "quantity": 1,
                         }
                         trades_record.append(record)
                     else:
@@ -61,32 +61,34 @@ def run_client(p, stock_name):
                     print("Error: Stock not found!")
             if random.random() > p:
                 print(f"\n\nEnd session. {num_of_trades} trades were made.")
-                print("debug 1")
                 break
 
-        print("debug 2")             
         # validation block
-        ''' to test error
+        """ to test error
         faulty_record = {
                             "order_number": 12345,
                             "stock_name": "GameStart",
                             "type": "sell",
                             "quantity": 1
                         }
-        trades_record.append(faulty_record)'''
+        trades_record.append(faulty_record)"""
         for trade in trades_record:
             transaction_number = trade["order_number"]
-            validation_resp = session.get(
-                f"{BASE_URL}/orders/{transaction_number}"
-                    )
+            validation_resp = session.get(f"{BASE_URL}/orders/{transaction_number}")
             if validation_resp.status_code == 200:
                 server_copy_trade = validation_resp.json()["data"]
-                if (server_copy_trade["name"] == trade["stock_name"] and server_copy_trade["type"] == trade["type"] and server_copy_trade["quantity"] == trade["quantity"]):
+                if (
+                    server_copy_trade["name"] == trade["stock_name"]
+                    and server_copy_trade["type"] == trade["type"]
+                    and server_copy_trade["quantity"] == trade["quantity"]
+                ):
                     print(f"Transaction {transaction_number} correctly verified.")
                 else:
-                    print(f"Transaction {transaction_number} doesn't match the server's order.")
+                    print(
+                        f"Transaction {transaction_number} doesn't match the server's order."
+                    )
             else:
-                print("error validating")    
+                print("error validating")
 
 
 # driver code
@@ -102,7 +104,7 @@ if __name__ == "__main__":
             p = 0.8
     else:
         p = 0.8
-        
+
     # pick a random stock
     stock_name = random.choice(STOCK_LIST)
     run_client(p, stock_name)
