@@ -5,6 +5,7 @@ import socket
 import threading
 import os
 from collections import OrderedDict
+import sys
 
 CATALOG_HOST = os.environ.get("CATALOG_HOST", "localhost")
 CATALOG_PORT = int(os.environ.get("CATALOG_PORT", "6666"))
@@ -210,14 +211,22 @@ class StockHandler(BaseHTTPRequestHandler):
             print(f"Looking up stock: {stock_name}")
 
             # LRU Cache bit
-            stock_details = cache.get(stock_name)
+            stock_details = None
+            if CACHE_FLAG:
+                print(f"Cache enabled")
+                stock_details = cache.get(stock_name)
+            else:
+                print(f"Cache disabled")
+                stock_details = -1
+
             if stock_details == -1:
                 print(f" Cache miss, contacting catalog")
                 catalog_request = {"action": "lookup", "stock_name": stock_name}
                 service_response = ask_catalog(catalog_request)
                 if service_response["status"] == "success":
                     stock_details = service_response["data"]
-                    cache.put(stock_name, stock_details)
+                    if CACHE_FLAG:
+                        cache.put(stock_name, stock_details)
                     response = {"data": stock_details}
                     self.send_response(200)
                 else:
@@ -305,8 +314,11 @@ def serve():
     print(f"Frontend server running on port {port}")
     server.serve_forever()
 
-
+CACHE_FLAG = True # we can pass a commandline argument to set to false: python frontend.py --cache=False
 if __name__ == "__main__":
+    for arg in sys.argv:
+        if arg.lower() == "--cache=false":
+            CACHE_FLAG = False
     get_replica_details()
     leader_selection()
     serve()
