@@ -6,6 +6,7 @@ import threading
 import os
 from collections import OrderedDict
 import sys
+import time
 
 CATALOG_HOST = os.environ.get("CATALOG_HOST", "localhost")
 CATALOG_PORT = int(os.environ.get("CATALOG_PORT", "6666"))
@@ -70,22 +71,39 @@ class LRUCache:
         self.capacity = capacity
 
     def get(self, key):
-        if key not in self.cache:
-            return -1
-        self.cache.move_to_end(key)
-        return self.cache[key]
+        if key in self.cache:
+            self.cache.move_to_end(key)
+            print(
+                f"{time.time()} - Cache hit: {key}, Cache contents: [{', '.join(self.cache.keys())}]"
+            )
+            return self.cache[key]
+        print(
+            f"{time.time()} - Cache miss: {key}, Cache contents: [{', '.join(self.cache.keys())}]"
+        )
+        return -1
 
     def put(self, key, value):
         if key in self.cache:
+            self.cache[key] = value
             self.cache.move_to_end(key)
-        self.cache[key] = value
-        if len(self.cache) > self.capacity:
-            self.cache.popitem(last=False)
+            print(
+                f"{time.time()} - Cache update: {key}, Cache contents: [{', '.join(self.cache.keys())}]"
+            )
+        else:
+            if len(self.cache) >= self.capacity:
+                removed = next(iter(self.cache))
+                self.cache.popitem(last=False)
+                print(
+                    f"{time.time()} - Cache replacement: {removed} replaced by {key}, Cache contents: [{', '.join(self.cache.keys())}]"
+                )
+            self.cache[key] = value
+            print(
+                f"{time.time()} - Cache add: {key}, Cache contents: [{', '.join(self.cache.keys())}]"
+            )
 
 
+cache = LRUCache(7)
 # end AI: prompt: i need to implement an LRU cache in python. Give me some starter code
-cache = LRUCache(7)  # change
-
 
 # AI: ChatGPT4o
 # prompt: my cache doesnt get updated upon a trade. Give me some starter code for my catalog service to invalidate cache entries that have been updated. i want it in basic python and sockets, not flask.
@@ -314,7 +332,8 @@ def serve():
     print(f"Frontend server running on port {port}")
     server.serve_forever()
 
-CACHE_FLAG = True # we can pass a commandline argument to set to false: python frontend.py --cache=False
+
+CACHE_FLAG = True  # we can pass a commandline argument to set to false: python frontend.py --cache=False
 if __name__ == "__main__":
     for arg in sys.argv:
         if arg.lower() == "--cache=false":
