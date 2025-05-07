@@ -1,0 +1,54 @@
+Fault Tolerance Test Results
+=========================
+
+Setting up replication environment
+--------------------------------
+Stopping any existing order service processes
+Started replica 0 (PID: 74634)
+Started replica 1 (PID: 74635)
+Started replica 2 (PID: 74636)
+Waiting for replicas to initialize...
+
+Test 1: Baseline client operation
+------------------------------
+Baseline client completed successfully
+Client made 13 successful trades
+Baseline latencies - Lookup: 0.003202493374164288s, Trade: 0.002726921668419471s, Order: 0.0024631206805889425s
+
+Test 2: Kill follower (replica 0)
+------------------------------
+Killed follower replica 0 (PID: 74634)
+Client completed successfully after follower failure
+Client made 13 successful trades after follower failure
+Latencies after follower failure - Lookup: 0.0022203922271728516s, Trade: 0.0035451742318960335s, Order: 0.012930998435387244s
+
+Test 3: Restart follower (replica 0)
+--------------------------------
+Restarted follower replica 0 (PID: 74757)
+Waiting for follower to synchronize...
+
+Test 4: Kill leader (replica 2)
+----------------------------
+Killed leader replica 2 (PID: 74636)
+Waiting for new leader election...
+Client completed successfully after leader failure
+Client made 5 successful trades after leader failure
+Latencies after leader failure - Lookup: 0.002830648422241211s, Trade: 0.0030691146850585936s, Order: 0.002966499328613281s
+
+Test 5: Restart leader (replica 2)
+------------------------------
+Restarted leader replica 2 (PID: 74912)
+Waiting for leader to synchronize...
+Latencies after leader recovery - Lookup: 0.002652078866958618s, Trade: 0.0029906034469604492s, Order: 0.0027064085006713867s
+
+Test 6: Check database consistency
+-------------------------------
+Database file for replica 0 not found
+Database file for replica 1 not found
+Database file for replica 2 not found
+Not enough replica databases found to compare consistency
+
+Fault Tolerance Test Conclusions
+------------------------------
+1. Did clients notice follower failures? No, failures were transparent
+2. Did clients notice leader failures? No, failures were transparent

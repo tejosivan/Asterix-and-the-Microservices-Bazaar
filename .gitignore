@@ -1,0 +1,40 @@
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/                # JetBrains IDEs
+.vscode/              # VS Code settings
+.ipynb_checkpoints/
+
+__pycache__/
+*.py[cod]
+*$py.class
+*.so                  # compiled extensions
+*.pyd
+
+
+venv/
+*/venv/
+
+build/
+dist/
+.eggs/
+*.egg-info/
+
+
+.pytest_cache/
+.tox/
+.nox/
+.coverage
+coverage.xml
+htmlcov/
+
+
+docs/_build/
+
+src/**/data/orders*.csv
+# plot images generated at runtime
+labuser.pem
+
+*.log
+*.tmp
