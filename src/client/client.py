@@ -64,14 +64,6 @@ def run_client(p, stock_name):
                 break
 
         # validation block
-        """ to test error
-        faulty_record = {
-                            "order_number": 12345,
-                            "stock_name": "GameStart",
-                            "type": "sell",
-                            "quantity": 1
-                        }
-        trades_record.append(faulty_record)"""
         for trade in trades_record:
             transaction_number = trade["order_number"]
             validation_resp = session.get(f"{BASE_URL}/orders/{transaction_number}")
