@@ -138,6 +138,7 @@ if __name__ == "__main__":
     latencydumpfile = f"latency_{timestamp}.txt"
 
     with open(latencydumpfile, "w") as f:
+
         f.write(f"lookup latency: {lookup_latency}\n")
         f.write(f"trade latency: {trade_latency}\n")
         f.write(f"order latency: {order_latency}\n")
@@ -151,5 +152,8 @@ if __name__ == "__main__":
         f.write("order latencies:\n")
         for i in order_latencies:
             f.write(str(i) + "\n")
+        
+        print(f"RESULT,{lookup_latency},{trade_latency},{order_latency}")
+
 
 

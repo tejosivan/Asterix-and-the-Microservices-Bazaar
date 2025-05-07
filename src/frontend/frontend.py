@@ -38,7 +38,7 @@ def leader_selection():
         try:
             print(
                 f"Trying to connect to replica {replica['id']} at {replica['host']}:{replica['port']}"
-            )  # <-- add this!
+            )  # add this
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.settimeout(3)
             sock.connect((replica["host"], replica["port"]))
@@ -84,7 +84,7 @@ class LRUCache:
 
 
 # end AI: prompt: i need to implement an LRU cache in python. Give me some starter code
-cache = LRUCache(3)  # change
+cache = LRUCache(7)  # change
 
 
 # AI: ChatGPT4o
