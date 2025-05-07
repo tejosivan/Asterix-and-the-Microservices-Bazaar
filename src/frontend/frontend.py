@@ -115,7 +115,6 @@ def invalidation_listener():
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server.bind(("0.0.0.0", INVALIDATION_PORT))
     server.listen(5)
-    print(f"Invalidation listener running on port {INVALIDATION_PORT}")
 
     while True:
         client_socket, addr = server.accept()
@@ -125,7 +124,6 @@ def invalidation_listener():
             stock = message.get("invalidate")
             if stock and stock in cache.cache:
                 del cache.cache[stock]
-                print(f"Cache invalidated via server push: {stock}")
         except Exception as e:
             print(f"Error in invalidation listener: {e}")
         client_socket.close()
@@ -226,19 +224,15 @@ class StockHandler(BaseHTTPRequestHandler):
 
         if parsed_path.startswith("/stocks/"):
             stock_name = parsed_path[8:]
-            print(f"Looking up stock: {stock_name}")
 
             # LRU Cache bit
             stock_details = None
             if CACHE_FLAG:
-                print(f"Cache enabled")
                 stock_details = cache.get(stock_name)
             else:
-                print(f"Cache disabled")
                 stock_details = -1
 
             if stock_details == -1:
-                print(f" Cache miss, contacting catalog")
                 catalog_request = {"action": "lookup", "stock_name": stock_name}
                 service_response = ask_catalog(catalog_request)
                 if service_response["status"] == "success":
@@ -252,7 +246,6 @@ class StockHandler(BaseHTTPRequestHandler):
                     self.send_response(service_response["error"]["code"])
 
             else:
-                print(f"Cache hit!")
                 response = {"data": stock_details}
                 self.send_response(200)
             self.send_header("Content-Type", "application/json")
@@ -263,7 +256,6 @@ class StockHandler(BaseHTTPRequestHandler):
             order_num = parsed_path[8:]
             if order_num.isdigit():
                 order_num = int(order_num)
-                print(f"Looking up order: {order_num}")
                 order_request = {"action": "lookup", "order_number": order_num}
                 service_response = ask_order(order_request)
                 if service_response["status"] == "success":
@@ -296,7 +288,6 @@ class StockHandler(BaseHTTPRequestHandler):
                 stock_name = data.get("name")
                 quantity = data.get("quantity")
                 order_type = data.get("type")
-                print(f"Processing order: {order_type} {quantity} of {stock_name}")
                 order_request = {
                     "action": "trade",
                     "stock_name": stock_name,

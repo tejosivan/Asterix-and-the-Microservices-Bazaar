@@ -71,7 +71,6 @@ def ask_catalog(request):
             response = sock.recv(4096)
             return json.loads(response.decode("utf-8"))
     except Exception as e:
-        print(f"Failed to talk to catalog: {e}")
         return {
             "status": "error",
             "error": {
@@ -126,7 +125,6 @@ def handle_client(client_socket):
             response = {}
             if request["action"] == "ping":
                 response = {"status": "success"}
-                print("debug: ping recvd")
             elif request["action"] == "trade":
                 response = process_trade(
                     request["stock_name"], request["quantity"], request["order_type"]
@@ -172,7 +170,6 @@ def get_newer_orders(last_transaction):
                                 }
                             )
         except Exception as e:
-            print(f"Error reading orders for sync: {e}")
             return {"status": "error", "error": f"Failed to read orders: {str(e)}"}
 
     return {"status": "success", "orders": newer_orders}
@@ -220,7 +217,6 @@ def sync_with_replicas():
         with open(orders_json_path, "r") as f:
             replicas = json.load(f)
     except FileNotFoundError:
-        print(f"Warning: Could not find orders.json")
         return
 
     for replica in replicas:
@@ -292,7 +288,6 @@ def init_txn_ctr():
             next_transaction = 0
     else:
         next_transaction = 0
-    print(f"Transaction counter initialized to {next_transaction}")
 
 
 def get_order(order_num):
@@ -369,7 +364,6 @@ def start_serve():
     try:
         while True:
             client_sock, address = server.accept()
-            print(f"New connection from {address}")
             client_thread = threading.Thread(target=handle_client, args=(client_sock,))
             client_thread.daemon = True
             client_thread.start()

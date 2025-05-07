@@ -6,11 +6,23 @@ import time
 from datetime import datetime
 import os
 
-STOCK_LIST = ["GameStart", "BoarCo", "RottenFishCo", "MenhirCo","CaesarTech","Reneium","Goscinnyium","PiloteCo","DogmatixCo","LutetiaTech"]
+STOCK_LIST = [
+    "GameStart",
+    "BoarCo",
+    "RottenFishCo",
+    "MenhirCo",
+    "CaesarTech",
+    "Reneium",
+    "Goscinnyium",
+    "PiloteCo",
+    "DogmatixCo",
+    "LutetiaTech",
+]
 trades_record = []
 lookup_latencies = []
 trade_latencies = []
 order_latencies = []
+
 
 # main function
 def run_client(p, stock_name):
@@ -27,7 +39,7 @@ def run_client(p, stock_name):
         for i in range(5):
             stock_name = random.choice(STOCK_LIST)
             while True:
-                #time.sleep(1) #needed?
+                # time.sleep(1) #needed?
                 startTime = time.time()
                 lookup_response = session.get(f"{BASE_URL}/stocks/{stock_name}")
                 endTime = time.time()
@@ -40,7 +52,11 @@ def run_client(p, stock_name):
                         f"\n\n{stock_name} lookup results: \n Price = {price} \n Quantity = {quantity}"
                     )
                     if quantity > 0:
-                        request_data = {"name": stock_name, "quantity": 1, "type": "sell"}
+                        request_data = {
+                            "name": stock_name,
+                            "quantity": 1,
+                            "type": "sell",
+                        }
                         startTime = time.time()
                         trade_response = session.post(
                             f"{BASE_URL}/orders", json=request_data
@@ -75,14 +91,6 @@ def run_client(p, stock_name):
                     break
 
             # validation block
-            """ to test error
-            faulty_record = {
-                                "order_number": 12345,
-                                "stock_name": "GameStart",
-                                "type": "sell",
-                                "quantity": 1
-                            }
-            trades_record.append(faulty_record)"""
         for trade in trades_record:
             transaction_number = trade["order_number"]
             startTime = time.time()
@@ -105,24 +113,14 @@ def run_client(p, stock_name):
                 print("error validating")
 
 
-
-
-
-
-
-
-
-
 # driver code
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         try:
             p = float(sys.argv[1])
             if not 0 <= p <= 1:
-                print("P needs to be in [0,1], defaulting to 0.8")
                 p = 0.8
         except ValueError:
-            print("P should be a float! Defaulting to 0.8")
             p = 0.8
     else:
         p = 0.8
@@ -138,7 +136,6 @@ if __name__ == "__main__":
     latencydumpfile = f"latency_{timestamp}.txt"
 
     with open(latencydumpfile, "w") as f:
-
         f.write(f"lookup latency: {lookup_latency}\n")
         f.write(f"trade latency: {trade_latency}\n")
         f.write(f"order latency: {order_latency}\n")
@@ -152,8 +149,5 @@ if __name__ == "__main__":
         f.write("order latencies:\n")
         for i in order_latencies:
             f.write(str(i) + "\n")
-        
+
         print(f"RESULT,{lookup_latency},{trade_latency},{order_latency}")
-
-
-

@@ -1,3 +1,8 @@
+"""
+AI: ChatGPT 4o - used in Lab 2
+ Prompt: I need help to work on Test Cases for Integration
+"""
+
 import socket
 import json
 import time
@@ -74,3 +79,7 @@ def run_all_tests():
 
 if __name__ == "__main__":
     run_all_tests()
+
+"""
+End AI-assisted code piece
+"""

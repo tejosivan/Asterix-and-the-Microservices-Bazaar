@@ -1,5 +1,5 @@
 [
-    {"id": 0, "host": "localhost", "port": 7777},
-    {"id": 1, "host": "localhost", "port": 7778},
-    {"id": 2, "host": "localhost", "port": 7779}
-]
+        {"id": 0, "host": "localhost", "port": 7777},
+        {"id": 1, "host": "localhost", "port": 7778},
+        {"id": 2, "host": "localhost", "port": 7779}
+    ]
