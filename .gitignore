@@ -33,8 +33,7 @@ htmlcov/
 docs/_build/
 
 src/**/data/orders*.csv
-# plot images generated at runtime
-labuser.pem
+labsuser.pem
 
 *.log
 *.tmp
