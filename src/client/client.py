@@ -5,9 +5,8 @@ import random
 import time
 import os
 
-STOCK_LIST = ["GameStart", "BoarCo", "RottenFishCo", "MenhirCo"]
+STOCK_LIST = ["GameStart", "BoarCo", "RottenFishCo", "MenhirCo","CaesarTech","Reneium","Goscinnyium","PiloteCo","DogmatixCo","LutetiaTech"]
 trades_record = []
-
 
 # main function
 def run_client(p, stock_name):
