@@ -1,0 +1,48 @@
+Killing any existing catalog, frontend and order processes...
+Setting up orders.json file...
+orders.json files created successfully
+Starting catalog service...
+Starting frontend service...
+Starting order service replicas...
+Started replica 0 (PID: 2979)
+Started replica 1 (PID: 2988)
+Started replica 2 (PID: 2995)
+Waiting for services to initialize...
+
+Test: Paxos Consensus with All Replicas ===
+Running 5 concurrent trades...
+Trades completed: 5 successful, 0 failed
+Waiting for transactions to be processed by all replicas...
+
+Verify Database Consistency ===
+Checking replica database files directly...
+Sample transactions from replica 0:
+  0: GameStart (sell, 1)
+  0: GameStart (sell, 1)
+  0: GameStart (sell, 1)
+  0: GameStart (sell, 1)
+  0: GameStart (sell, 1)
+  ... and 25 more transactions
+Sample transactions from replica 1:
+  0: GameStart (sell, 1)
+  0: GameStart (sell, 1)
+  0: GameStart (sell, 1)
+  0: GameStart (sell, 1)
+  0: GameStart (sell, 1)
+  ... and 25 more transactions
+Sample transactions from replica 2:
+  0: GameStart (sell, 1)
+  0: GameStart (sell, 1)
+  0: GameStart (sell, 1)
+  0: GameStart (sell, 1)
+  0: GameStart (sell, 1)
+  ... and 25 more transactions
+
+Comparing all replicas against replica 0...
+Comparing replica 1...
+Comparing replica 2...
+
+ All replicas have identical transaction records
+Paxos consensus is working correctly to maintain consistency
+Stopping all processes...
+Test completed.

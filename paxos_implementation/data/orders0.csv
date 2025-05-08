@@ -24,3 +24,8 @@ transaction_number,stock_name,order_type,quantity,timestamp
 3,GameStart,sell,1,1746658110.6613371
 3,GameStart,sell,1,1746658111.182645
 3,GameStart,sell,1,1746658111.6985118
+4,RottenFishCo,sell,1,1746672073.895736
+4,RottenFishCo,sell,1,1746672074.4045281
+4,RottenFishCo,sell,1,1746672074.9156559
+4,RottenFishCo,sell,1,1746672075.428798
+4,RottenFishCo,sell,1,1746672075.948822
