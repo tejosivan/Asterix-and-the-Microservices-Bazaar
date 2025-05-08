@@ -67,6 +67,14 @@ python src/frontend/frontend.py
 python src/frontend/frontend.py --cache=false
 ```
 
+#### 4. Start simple client
+
+```bash
+# With p=0.8
+python src/client/client.py 0.8
+
+```
+
 ### Running Tests
 
 ```bash
