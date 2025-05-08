@@ -5,8 +5,20 @@ import random
 import time
 import os
 
-STOCK_LIST = ["GameStart", "BoarCo", "RottenFishCo", "MenhirCo","CaesarTech","Reneium","Goscinnyium","PiloteCo","DogmatixCo","LutetiaTech"]
+STOCK_LIST = [
+    "GameStart",
+    "BoarCo",
+    "RottenFishCo",
+    "MenhirCo",
+    "CaesarTech",
+    "Reneium",
+    "Goscinnyium",
+    "PiloteCo",
+    "DogmatixCo",
+    "LutetiaTech",
+]
 trades_record = []
+
 
 # main function
 def run_client(p, stock_name):
@@ -36,7 +48,7 @@ def run_client(p, stock_name):
                         f"{BASE_URL}/orders", json=request_data
                     )
                     if trade_response.status_code == 200:
-                        resp = trade_response.json()
+                        resp = trade_response.json()  # Add to response
                         transaction_number = resp["data"]["transaction_number"]
                         print(
                             f"\n\nOne stock purchased of {stock_name}, transaction_number = {transaction_number}"
@@ -48,7 +60,9 @@ def run_client(p, stock_name):
                             "type": "sell",
                             "quantity": 1,
                         }
-                        trades_record.append(record)
+                        trades_record.append(
+                            record
+                        )  # Append to increase the trade records
                     else:
                         print("\n\nTrade Failed, exiting")
                         break
@@ -70,7 +84,8 @@ def run_client(p, stock_name):
                 server_copy_trade = validation_resp.json()["data"]
                 if (
                     server_copy_trade["name"] == trade["stock_name"]
-                    and server_copy_trade["type"] == trade["type"]
+                    and server_copy_trade["type"]
+                    == trade["type"]  # Additionally copy server trades
                     and server_copy_trade["quantity"] == trade["quantity"]
                 ):
                     print(f"Transaction {transaction_number} correctly verified.")
@@ -89,7 +104,7 @@ if __name__ == "__main__":
             p = float(sys.argv[1])
             if not 0 <= p <= 1:
                 print("P needs to be in [0,1], defaulting to 0.8")
-                p = 0.8
+                p = 0.8  # Hard code value for default
         except ValueError:
             print("P should be a float! Defaulting to 0.8")
             p = 0.8

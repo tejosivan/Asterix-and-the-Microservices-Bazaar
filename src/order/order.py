@@ -150,7 +150,7 @@ def handle_client(client_socket):
 def get_newer_orders(last_transaction):
     global next_transaction
 
-    newer_orders = []
+    newer_orders = []  # array to capture newer orders
 
     if os.path.exists(order_file):
         try:
@@ -201,7 +201,9 @@ def sync_with_replicas():
                 for row in reader:
                     if row and len(row) > 0:
                         try:
-                            transaction_num = int(row[0])
+                            transaction_num = int(
+                                row[0]
+                            )  # Initialize the transaction number
                             last_transaction = max(last_transaction, transaction_num)
                         except ValueError:
                             pass
@@ -226,7 +228,7 @@ def sync_with_replicas():
 
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-                sock.settimeout(5)
+                sock.settimeout(5)  # Set timeout value
                 sock.connect((replica["host"], replica["port"]))
                 request = {
                     "action": "get_newer_orders",
@@ -252,7 +254,7 @@ def sync_with_replicas():
                         f"Synced {len(response_data['orders'])} orders from replica at {replica['host']}:{replica['port']}"
                     )
 
-                    # If we got orders, we're done - no need to check other replicas
+                    # If we got orders, we can not check other details.
                     if response_data["orders"]:
                         break
 
@@ -345,7 +347,7 @@ def propagate_to_followers(transaction_num, stock_name, order_type, quantity):
                     "quantity": quantity,
                 }
                 sock.sendall(json.dumps(request).encode("utf-8"))
-                # We don't need to wait for a response here
+                #No response wait here
         except Exception as e:
             print(
                 f"Failed to propagate order to replica at {replica['host']}:{replica['port']}: {e}"

@@ -156,7 +156,7 @@ def get_catalog_socket():
 def get_order_socket():
     if not hasattr(local_data, "order_socket"):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect((ORDER_HOST, ORDER_PORT))
+        sock.connect((ORDER_HOST, ORDER_PORT))  # Connect to the socket
         local_data.order_socket = sock
     return local_data.order_socket
 
@@ -165,7 +165,7 @@ def ask_catalog(request):
     try:
         sock = get_catalog_socket()
         sock.sendall(json.dumps(request).encode("utf-8"))
-        response = sock.recv(4096)
+        response = sock.recv(4096)  # Receive response from the socket
         return json.loads(response.decode("utf-8"))
     except Exception as e:
         print(f"Error talking to catalog: {e}")
@@ -202,7 +202,9 @@ def ask_order(request):
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
                 sock.settimeout(5)  # We are setting a timeout value here
                 sock.connect((leader["host"], leader["port"]))
-                sock.sendall(json.dumps(request).encode("utf-8"))
+                sock.sendall(
+                    json.dumps(request).encode("utf-8")
+                )  # Use standard sendall
                 response = sock.recv(4096)
                 return json.loads(response.decode("utf-8"))
 
