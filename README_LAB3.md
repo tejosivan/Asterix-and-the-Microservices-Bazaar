@@ -71,6 +71,7 @@ python src/frontend/frontend.py --cache=false
 
 ```bash
 cd src/client
+python testclient.py ( This will create a bunch of .txt and .log files which are important for us to visualize and analyse at all situations)
 python runclients.py
 ```
 
@@ -174,6 +175,9 @@ python3 src/order/order.py 0
 # Set environment variables
 export FRONTEND_HOST=your-instance-public-dns
 export FRONTEND_PORT=5555
+
+# Run Test clients
+python src/client/testlient.py
 
 # Run clients
 python src/client/runclients.py
