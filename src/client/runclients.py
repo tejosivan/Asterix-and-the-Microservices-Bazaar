@@ -1,5 +1,13 @@
 # AI: ChatGPT 4o
-# prompt: help  me with some starter code to run testclient.py 5 times with different p values [0.0, 0.2, 0.4, 0.6, 0.8],  aand save the output to a csv file.  The output should be saved in a csv file  in the same directory as this script.
+# prompt: Help me create a comprehensive testing script that:
+
+# Runs testclient.py with different p values [0.0, 0.2, 0.4, 0.6, 0.8]
+# Tests performance with cache enabled and disabled
+# Conducts cache replacement testing to verify LRU behavior
+# Performs fault tolerance testing with replica failures
+# Generates visualizations for latency comparison, fault tolerance, and cache behavior
+# Saves all results to CSV files in the same directory as the script
+#
 import subprocess
 import sys
 import time
@@ -876,11 +884,11 @@ for cache_enabled in [True, False]:
             else:
                 print(f"No latency files parsed for p = {p}, cache = {cache_enabled}")
 
-            for file in latency_files:
-                try:
-                    os.remove(file)
-                except:
-                    pass
+            # for file in latency_files:
+            #     try:
+            #         os.remove(file)
+            #     except:
+            #         pass
 
         frontend_proc.terminate()
         frontend_log.close()
@@ -915,4 +923,4 @@ cleanup_all_logs()
 print("\nAll tests completed. Results saved to CSV files, logs, and plots.")
 
 # AI: ChatGPT 4o
-# prompt end : help  me with some starter code to run testclient.py 5 times with different p values [0.0, 0.2, 0.4, 0.6, 0.8],  aand save the output to a csv file.  The output should be saved in a csv file  in the same directory as this script.
+# prompt end
