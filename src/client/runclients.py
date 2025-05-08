@@ -519,42 +519,6 @@ def generate_plots():
     plt.legend()
     plt.grid(True)
 
-    plt.subplot(2, 2, 4)
-
-    bar_width = 0.15
-    index = df_cache_on["p_value"]
-
-    plt.bar(
-        index - bar_width * 1.5,
-        df_cache_on["lookup_latency"],
-        bar_width,
-        label="Lookup (Cache On)",
-    )
-    plt.bar(
-        index - bar_width * 0.5,
-        df_cache_on["trade_latency"],
-        bar_width,
-        label="Trade (Cache On)",
-    )
-    plt.bar(
-        index + bar_width * 0.5,
-        df_cache_off["lookup_latency"],
-        bar_width,
-        label="Lookup (Cache Off)",
-    )
-    plt.bar(
-        index + bar_width * 1.5,
-        df_cache_off["trade_latency"],
-        bar_width,
-        label="Trade (Cache Off)",
-    )
-
-    plt.xlabel("p value")
-    plt.ylabel("Latency (s)")
-    plt.title("Comparison of Latencies")
-    plt.legend()
-    plt.grid(True)
-
     plt.tight_layout()
     plt.savefig("latency_comparison_plot.png")
     print("Latency comparison plots generated and saved to latency_comparison_plot.png")

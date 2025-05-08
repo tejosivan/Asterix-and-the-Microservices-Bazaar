@@ -4,42 +4,42 @@ Fault Tolerance Test Results
 Setting up replication environment
 --------------------------------
 Stopping any existing order service processes
-Started replica 0 (PID: 74634)
-Started replica 1 (PID: 74635)
-Started replica 2 (PID: 74636)
+Started replica 0 (PID: 41703)
+Started replica 1 (PID: 41704)
+Started replica 2 (PID: 41705)
 Waiting for replicas to initialize...
 
 Test 1: Baseline client operation
 ------------------------------
 Baseline client completed successfully
-Client made 13 successful trades
-Baseline latencies - Lookup: 0.003202493374164288s, Trade: 0.002726921668419471s, Order: 0.0024631206805889425s
+Client made 6 successful trades
+Baseline latencies - Lookup: 0.002020597457885742s, Trade: 0.0025654236475626626s, Order: 0.0026163657506306968s
 
 Test 2: Kill follower (replica 0)
 ------------------------------
-Killed follower replica 0 (PID: 74634)
+Killed follower replica 0 (PID: 41703)
 Client completed successfully after follower failure
-Client made 13 successful trades after follower failure
-Latencies after follower failure - Lookup: 0.0022203922271728516s, Trade: 0.0035451742318960335s, Order: 0.012930998435387244s
+Client made 9 successful trades after follower failure
+Latencies after follower failure - Lookup: 0.0021888415018717446s, Trade: 0.003141588634914822s, Order: 0.0026428434583875868s
 
 Test 3: Restart follower (replica 0)
 --------------------------------
-Restarted follower replica 0 (PID: 74757)
+Restarted follower replica 0 (PID: 41826)
 Waiting for follower to synchronize...
 
 Test 4: Kill leader (replica 2)
 ----------------------------
-Killed leader replica 2 (PID: 74636)
+Killed leader replica 2 (PID: 41705)
 Waiting for new leader election...
 Client completed successfully after leader failure
-Client made 5 successful trades after leader failure
-Latencies after leader failure - Lookup: 0.002830648422241211s, Trade: 0.0030691146850585936s, Order: 0.002966499328613281s
+Client made 7 successful trades after leader failure
+Latencies after leader failure - Lookup: 0.0019082001277378627s, Trade: 0.0027963093348911832s, Order: 0.003413234438214983s
 
 Test 5: Restart leader (replica 2)
 ------------------------------
-Restarted leader replica 2 (PID: 74912)
+Restarted leader replica 2 (PID: 41975)
 Waiting for leader to synchronize...
-Latencies after leader recovery - Lookup: 0.002652078866958618s, Trade: 0.0029906034469604492s, Order: 0.0027064085006713867s
+Latencies after leader recovery - Lookup: 0.002122368131365095s, Trade: 0.0024871826171875s, Order: 0.002787249428885324s
 
 Test 6: Check database consistency
 -------------------------------
