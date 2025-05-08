@@ -1,7 +1,7 @@
 # AI: ChatGPT 4o
 # prompt: Help me create a comprehensive testing script that:
 
-# Runs testclient.py with different p values [0.0, 0.2, 0.4, 0.6, 0.8]
+# Runs runclient.py with different p values [0.0, 0.2, 0.4, 0.6, 0.8]
 # Tests performance with cache enabled and disabled
 # Conducts cache replacement testing to verify LRU behavior
 # Performs fault tolerance testing with replica failures

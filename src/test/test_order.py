@@ -1,6 +1,6 @@
 """
 AI: ChatGPT 4o - used in Lab 2
- Prompt: I need help to work on Test Cases for Integration
+ Prompt: I need help to work on Test Cases for Order
 """
 
 import socket
