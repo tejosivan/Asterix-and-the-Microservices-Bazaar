@@ -1,7 +1,13 @@
 """
 AI: ChatGPT 4o
 Prompt:
-Now help me implement this in Paxos
+Implement a fault-tolerant distributed order processing system using the Paxos consensus algorithm where:
+
+Multiple replicas must coordinate to agree on transaction ordering
+The system should handle network partitions gracefully
+Leader election should occur automatically when the current leader fails
+Include mechanisms for log replication and state recovery
+Include both the algorithm pseudocode and a working Python implementation.
 """
 
 import socket

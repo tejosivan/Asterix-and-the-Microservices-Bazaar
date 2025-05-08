@@ -10,7 +10,11 @@ BASE_URL = f"http://{FRONTEND_HOST}:{FRONTEND_PORT}"
 
 """
 AI: ChatGPT 4o - used in Lab 2
- Prompt: I need help to work on Test Cases for Frontend Service
+ Prompt:  Create a testing script for 
+ - Non-existent stocks
+   - Invalid order parameters
+   - Service connectivity issues
+   - Proper JSON response formatting
 """
 
 

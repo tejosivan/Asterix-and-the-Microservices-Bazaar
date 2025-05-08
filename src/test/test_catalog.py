@@ -8,8 +8,12 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 """
-AI: ChatGPT 4o - used in Lab 2
- Prompt: I need help to work on Test Cases for Catalog
+AI: ChatGPT 4o
+1. Tests basic functionality including:
+   - Looking up existing stocks
+   - Handling non-existent stock requests
+   - Updating stock quantities
+   - Validating quantity constraints
 """
 
 

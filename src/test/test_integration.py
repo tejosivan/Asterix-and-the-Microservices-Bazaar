@@ -11,7 +11,10 @@ BASE_URL = f"http://{FRONTEND_HOST}:{FRONTEND_PORT}"
 
 """
 AI: ChatGPT 4o - used in Lab 2
- Prompt: I need help to work on Test Cases for Integration
+ Prompt: Test the caching mechanism by:
+   - Verifying cache hits on repeated lookups
+   - Testing cache invalidation when stock data is modified
+   - Confirming fresh data is retrieved after invalidation
 """
 
 

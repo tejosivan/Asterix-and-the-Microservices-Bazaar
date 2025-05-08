@@ -1,7 +1,12 @@
 """
 AI: ChatGPT 4o
 Prompt:
-Now help me implement this in Paxos, with a script for testing everything
+ - Create a comprehensive test script that:
+     * Verifies consensus is reached under normal operations
+     * Tests system behavior during replica failures
+     * Validates database consistency across all replicas
+     * Measures system performance under concurrent load
+     * Simulates network partitions to verify safety properties
 """
 
 import requests
