@@ -5,7 +5,7 @@ import csv
 import os
 
 # Variables Initialization
-stock_check = {}
+stock_check = {} # dictionary format: {name: {price, quantity}}
 guardian = threading.RLock()
 catalog_port = 6666
 
@@ -50,7 +50,7 @@ def load_stocks():  # labask - 10 different stocks, 100 volume
     print("Stock catalog loaded:", stock_check)
 
 
-def save_stocks():
+def save_stocks(): # to store details in csv file
     try:
         if not os.path.exists("data"):
             os.makedirs("data")
@@ -65,7 +65,7 @@ def save_stocks():
         print(f"Failed to write stocks: {e}")
 
 
-def find_stock(stock_name):
+def find_stock(stock_name): #looking up stock details
     with guardian:
         if stock_name in stock_check:
             return {
@@ -83,7 +83,7 @@ def find_stock(stock_name):
             }
 
 
-def change_quantity(stock_name, qty_change):
+def change_quantity(stock_name, qty_change): # to update stock volume
     with guardian:
         if stock_name not in stock_check:
             return {
@@ -99,7 +99,7 @@ def change_quantity(stock_name, qty_change):
             }
         stock_check[stock_name]["quantity"] = new_qty
         save_stocks()
-        send_invalidation(stock_name)  # calling invalidate function
+        send_invalidation(stock_name)  #calling invalidate function
         return {
             "status": "success",
             "data": {
@@ -110,7 +110,7 @@ def change_quantity(stock_name, qty_change):
         }
 
 
-def handle_client(client_socket):
+def handle_client(client_socket): # to deal with JSON requests from clients
     try:
         while True:
             data = client_socket.recv(4096)
@@ -153,7 +153,7 @@ def start_server():
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     host = "0.0.0.0"
     server.bind((host, catalog_port))
-    server.listen(10)
+    server.listen(10) # # of connections 
     print(f"Catalog service running on {host}:{catalog_port}")
     try:
         while True:
@@ -168,6 +168,6 @@ def start_server():
         server.close()
 
 
-# driver code start
+# invoke driver code start
 if __name__ == "__main__":
     start_server()
