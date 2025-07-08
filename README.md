@@ -1,4 +1,8 @@
-# Lab 3 - Replication, Caching, and Fault Tolerance
+# Asterix and the Microservices Bazaar
+
+This project was undertaken as part of UMass Compsci 677 (Spring '25) by Tejas Sivan and Deepesh Suranjandass. The submitted Readme can be found below. The questionnaire can be found in Questionnaire.md.
+
+Lab 3 - Replication, Caching, and Fault Tolerance
 
 ## Overview
 
