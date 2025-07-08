@@ -9,8 +9,7 @@ Spring 2025
 
 1. Name and email: Tejas Sivan, tsivan@umass.edu
 2. Team member name and email: Deepesh Suranjandass, dsuranjandas@umass.edu
-3. Number of late days used for this lab: 2
-4. Number of late days used so far including this lab: 4
+
 
 ## Goals and Learning Outcomes
 
