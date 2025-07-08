@@ -36,4 +36,5 @@ src/**/data/orders*.csv
 labsuser.pem
 
 *.log
-*.tmp
+*.tmp*.pem
+*.DS_Store
